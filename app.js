@@ -5,6 +5,9 @@ import { AppState } from './services/state.js';
 import { initChat } from './components/chat.js';
 import { initPresence } from './services/rtdb.js';
 import { initUsersList } from './components/users.js';
+import { initGames } from './components/games.js';
+import { initLeaderboard } from './components/leaderboard.js';
+import { initAdmin } from './components/admin.js';
 
 // DOM Elements
 const authView = document.getElementById('auth-view');
@@ -29,10 +32,13 @@ function initializeApp() {
         mainLayout.classList.add('active');
       }, 250);
 
-      // Start presence check & Chat
+      // Start presence check & Chat & Modules
       initPresence(user.uid);
       initChat();
       initUsersList();
+      initGames();
+      initLeaderboard();
+      initAdmin();
     } else {
       console.log("No user, showing login.");
       AppState.clear();
