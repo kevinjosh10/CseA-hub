@@ -39,15 +39,15 @@ export function initUsersList() {
       userRow.style.transition = 'background-color var(--transition-fast)';
       userRow.style.borderRadius = 'var(--radius-sm)';
       
-      userRow.onmouseover = () => userRow.style.backgroundColor = 'var(--bg-tertiary)';
+      userRow.onmouseover = () => userRow.style.backgroundColor = 'var(--bg-panel-hover)';
       userRow.onmouseout = () => userRow.style.backgroundColor = 'transparent';
 
       const isMe = u.uid === (AppState.user && AppState.user.id);
       
       userRow.innerHTML = `
         <div style="position: relative;">
-          <img src="${userData.avatar}" style="width: 36px; height: 36px; border-radius: 50%; background-color: #fff;">
-          <div style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background-color: ${u.online ? 'var(--success-color)' : 'var(--text-muted)'}; border: 2px solid var(--bg-secondary);"></div>
+          <img src="${userData.avatar}" style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--bg-primary);">
+          <div style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background-color: ${u.online ? 'var(--success-color)' : 'var(--text-muted)'}; border: 2px solid var(--bg-primary);"></div>
         </div>
         <div style="flex: 1; min-width: 0;">
           <div style="font-weight: 500; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-primary);">
