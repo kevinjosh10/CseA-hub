@@ -1,9 +1,7 @@
-import { auth } from '../services/firebase.js';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
-} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import { db } from '../services/firebase.js';
+import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { AppState } from '../services/state.js';
+import { performLogin } from '../app.js';
 
 export function initAuth() {
   const btnAction = document.getElementById('btn-login');
@@ -18,39 +16,31 @@ export function initAuth() {
       alert("Both Username and Display Name are required.");
       return;
     }
-
-    // Use a deterministic pseudo-email & global secret password for Firebase Auth
-    const email = `${user}@csea.private.hub`;
-    const secretPass = `CseA_Global_Pass_123!`;
     
     btnAction.disabled = true;
     btnAction.textContent = "Loading...";
 
     try {
-      // Attempt login first
-      await signInWithEmailAndPassword(auth, email, secretPass);
-    } catch (e) {
-      // If user doesn't exist, create them
-      if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
-        try {
-          const cred = await createUserWithEmailAndPassword(auth, email, secretPass);
-          // Create user profile in Firestore
-          await AppState.createUserProfile(cred.user.uid, {
-            username: user,
-            displayName: name
-          });
-        } catch (createErr) {
-          console.error("Signup error:", createErr);
-          alert(createErr.message);
-          btnAction.disabled = false;
-          btnAction.textContent = "Enter Hub";
-        }
+      const userRef = doc(db, 'users', user);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        // Exists, so perform login
+        await performLogin(user);
       } else {
-        console.error("Auth error:", e);
-        alert("Authentication failed.");
-        btnAction.disabled = false;
-        btnAction.textContent = "Enter Hub";
+        // Doesn't exist, create it then login
+        await AppState.createUserProfile(user, {
+          username: user,
+          displayName: name
+        });
+        await performLogin(user);
       }
+
+    } catch (e) {
+      console.error("Auth error:", e);
+      alert("Authentication failed. Check your connection or Firestore Rules.");
+      btnAction.disabled = false;
+      btnAction.textContent = "Enter Hub";
     }
   });
 }
