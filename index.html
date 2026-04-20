@@ -16,16 +16,14 @@
         <p style="color: var(--text-secondary); font-size: 14px;">The private community.</p>
         
         <div id="auth-forms">
-          <input type="text" id="auth-username" placeholder="Username (Private)" required autocomplete="off">
-          <input type="password" id="auth-password" placeholder="Password" required>
-          <div id="signup-fields" class="hidden" style="display: flex; flex-direction: column; gap: 20px; margin-top: -10px;">
-            <p style="font-size: 12px; color: var(--danger-color); font-weight: 500;">
-              Warning: Your username is private. Do not share it. Everyone will know you by your Display Name.
-            </p>
-            <input type="text" id="auth-displayname" placeholder="Display Name (Public)">
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+            Enter a private username to secure your session, and a public Display Name for the community.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <input type="text" id="auth-username" placeholder="Username (Private)" required autocomplete="off">
+            <input type="text" id="auth-displayname" placeholder="Display Name (Public)" required autocomplete="off">
           </div>
-          <button id="btn-login" class="btn-primary" style="width: 100%; margin-top: 20px;">Login</button>
-          <button id="btn-toggle-signup" style="width: 100%; padding: 12px; color: var(--accent-color); margin-top: 10px;">Need an account? Sign up</button>
+          <button id="btn-login" class="btn-primary" style="width: 100%; margin-top: 24px;">Enter Hub</button>
         </div>
       </div>
     </div>

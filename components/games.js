@@ -26,8 +26,14 @@ export function initGames() {
     card.style.cursor = 'pointer';
     card.style.transition = 'all var(--transition-fast)';
 
-    card.onmouseover = () => card.style.boxShadow = 'var(--shadow-float)';
-    card.onmouseout = () => card.style.boxShadow = 'var(--shadow-soft)';
+    card.onmouseover = () => {
+      card.style.boxShadow = 'var(--shadow-float)';
+      card.style.transform = 'scale(1.02)';
+    };
+    card.onmouseout = () => {
+      card.style.boxShadow = 'var(--shadow-soft)';
+      card.style.transform = 'scale(1)';
+    };
 
     card.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px;">
