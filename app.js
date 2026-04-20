@@ -4,6 +4,7 @@ import { initAuth } from './components/auth.js';
 import { AppState } from './services/state.js';
 import { initChat } from './components/chat.js';
 import { initPresence } from './services/rtdb.js';
+import { initUsersList } from './components/users.js';
 
 // DOM Elements
 const authView = document.getElementById('auth-view');
@@ -31,6 +32,7 @@ function initializeApp() {
       // Start presence check & Chat
       initPresence(user.uid);
       initChat();
+      initUsersList();
     } else {
       console.log("No user, showing login.");
       AppState.clear();
