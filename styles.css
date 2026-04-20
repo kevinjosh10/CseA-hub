@@ -66,8 +66,14 @@ button {
   transition: all var(--transition-smooth);
 }
 
-button:active {
+button:active:not(:disabled) {
   transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  filter: grayscale(100%);
 }
 
 input {
@@ -232,6 +238,22 @@ input:focus {
   stroke-linecap: round;
   stroke-linejoin: round;
   transition: stroke var(--transition-fast);
+}
+
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary); 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary); 
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted); 
 }
 
 .nav-item {
