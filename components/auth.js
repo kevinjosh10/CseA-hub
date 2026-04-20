@@ -1,9 +1,8 @@
 import { db } from '../services/firebase.js';
 import { doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { AppState } from '../services/state.js';
-import { performLogin } from '../app.js';
 
-export function initAuth() {
+export function initAuth(onLoginSuccess) {
   const btnAction = document.getElementById('btn-login');
   const inputUsername = document.getElementById('auth-username');
   const inputDisplayName = document.getElementById('auth-displayname');
@@ -26,14 +25,14 @@ export function initAuth() {
 
       if (userSnap.exists()) {
         // Exists, so perform login
-        await performLogin(user);
+        await onLoginSuccess(user);
       } else {
         // Doesn't exist, create it then login
         await AppState.createUserProfile(user, {
           username: user,
           displayName: name
         });
-        await performLogin(user);
+        await onLoginSuccess(user);
       }
 
     } catch (e) {
