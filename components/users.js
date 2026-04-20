@@ -11,6 +11,8 @@ export function initUsersList() {
   subscribeToPresence(async (statusObj) => {
     usersListEl.innerHTML = '';
     
+    if (!statusObj) return;
+
     // Convert object to array
     const users = Object.entries(statusObj).map(([uid, data]) => ({ uid, ...data }));
     
