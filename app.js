@@ -43,7 +43,7 @@ function initializeApp() {
   console.log("Initializing CSE-A Hub...");
   
   // Initialize Auth listeners
-  initAuth();
+  initAuth(performLogin);
   
   // Checking local session
   const storedUser = localStorage.getItem('cse_user_id');
