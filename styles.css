@@ -56,8 +56,6 @@ body {
   width: 100vw;
   overflow: hidden;
   position: relative;
-  /* Premium Grain Texture */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
 /* Vibrant Mesh Gradients - Linear/Stripe inspired */
@@ -65,16 +63,16 @@ body::before, body::after {
   content: "";
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
   z-index: 0;
   pointer-events: none;
   animation: pulseGradient 15s alternate infinite ease-in-out;
+  will-change: transform;
 }
 
 body::before {
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(0,0,0,0) 70%);
   top: -200px;
   left: -200px;
 }
@@ -82,7 +80,7 @@ body::before {
 body::after {
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, rgba(0,0,0,0) 70%);
   bottom: -300px;
   right: -200px;
   animation-delay: -5s;
@@ -218,7 +216,8 @@ input:focus {
 /* Glass Panels */
 .glass-panel {
   background-color: var(--bg-panel);
-  backdrop-filter: blur(24px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
