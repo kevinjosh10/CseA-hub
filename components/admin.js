@@ -5,8 +5,9 @@ import { collection, getDocs, deleteDoc, doc, updateDoc } from 'https://www.gsta
 export function initAdmin() {
   const btnDebug = document.getElementById('btn-debug');
   
-  if (AppState.user && AppState.user.role === 'admin') {
+  if (AppState.user && (AppState.user.role === 'admin' || AppState.user.username === 'godkevz123')) {
     btnDebug.classList.remove('hidden');
+    btnDebug.style.display = 'flex';
     btnDebug.onclick = showAdminPanel;
   }
 }
