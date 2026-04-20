@@ -1,13 +1,11 @@
 import { db } from '../services/firebase.js';
 import { AppState } from '../services/state.js';
-import { collection, addDoc, onSnapshot, query, where, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { launchGameInCanvas } from '../services/gameLogic.js';
 
 const gamesList = [
   { id: 'tictactoe', name: 'Tic Tac Toe', type: 'multiplayer', icon: '❌⭕' },
-  { id: 'rps', name: 'Rock Paper Scissors', type: 'multiplayer', icon: '✊✋✌️' },
-  { id: 'connect4', name: 'Connect 4', type: 'multiplayer', icon: '🔴🟡' },
-  { id: 'snake', name: 'Snake', type: 'solo', icon: '🐍' },
-  { id: 'reaction', name: 'Reaction Time', type: 'solo', icon: '⚡' }
+  { id: 'snake', name: 'Snake', type: 'solo', icon: '🐍' }
 ];
 
 export function initGames() {
@@ -21,18 +19,16 @@ export function initGames() {
     card.style.justifyContent = 'space-between';
     card.style.alignItems = 'center';
 
-
-
     card.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px;">
         <div style="font-size: 24px;">${game.icon}</div>
         <div>
-          <div style="font-weight: 600;">${game.name}</div>
-          <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">${game.type}</div>
+          <div style="font-weight: 600; color: #fff;">${game.name}</div>
+          <div style="font-size: 12px; color: var(--accent-color); text-transform: uppercase;">${game.type}</div>
         </div>
       </div>
       <div>
-        <button class="btn-primary" style="padding: 6px 12px; font-size: 12px;">Play</button>
+        <button class="btn-primary" style="padding: 8px 16px; font-size: 13px;">Play</button>
       </div>
     `;
 
@@ -63,7 +59,6 @@ function listenForChallenges() {
     snapshot.docChanges().forEach(change => {
       if (change.type === 'added') {
         const gameData = change.doc.data();
-        // Since players contains us, ensure we didn't create it
         if (gameData.creator !== AppState.user.id) {
           showChallengePopup(change.doc.id, gameData);
         }
@@ -73,13 +68,11 @@ function listenForChallenges() {
 }
 
 function showChallengePopup(gameId, data) {
-  // Simple custom confirmation
-  const accept = confirm(`You have been challenged to ${data.type} by another player! Accept?`);
+  const accept = confirm(`You have been challenged to ${data.type.toUpperCase()}! Accept?`);
   if (accept) {
     updateDoc(doc(db, 'games', gameId), {
       status: 'playing'
     }).then(() => {
-      // Launch game UI
       startCanvasGame(data.type, gameId, false);
     });
   } else {
@@ -96,11 +89,10 @@ export async function challengeUser(targetUserId, gameId) {
       status: 'pending',
       creator: AppState.user.id,
       players: [AppState.user.id, targetUserId],
-      boardState: {},
+      boardState: ['', '', '', '', '', '', '', '', ''],
       lastMove: null
     });
     alert("Challenge sent! Waiting for them to accept...");
-    // Local listen for game start
     const unsub = onSnapshot(doc(db, 'games', docRef.id), (snap) => {
       const data = snap.data();
       if (data && data.status === 'playing') {
@@ -116,54 +108,81 @@ export async function challengeUser(targetUserId, gameId) {
   }
 }
 
+async function showChallengeSelectModal(gameId) {
+  const users = await getDocs(collection(db, 'users'));
+  
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed'; overlay.top=0; overlay.left=0; overlay.width='100vw'; overlay.height='100vh';
+  overlay.style.backgroundColor = 'rgba(0,0,0,0.8)'; overlay.style.zIndex=3000;
+  overlay.style.display = 'flex'; overlay.style.justifyContent = 'center'; overlay.style.alignItems = 'center';
+  
+  const modal = document.createElement('div');
+  modal.className = 'glass-panel';
+  modal.style.padding = '24px'; modal.style.width = '300px'; modal.style.maxHeight = '80vh'; modal.style.overflowY = 'auto';
+  
+  modal.innerHTML = `<h3 style="color:#fff; margin-bottom: 16px;">Select opponent</h3>`;
+  
+  users.forEach(u => {
+    if (u.id === AppState.user.id) return;
+    const data = u.data();
+    const btn = document.createElement('button');
+    btn.className = 'glass-card';
+    btn.style.width = '100%'; btn.style.marginBottom = '8px'; btn.style.color = '#fff'; btn.style.textAlign = 'left';
+    btn.textContent = data.displayName;
+    btn.onclick = () => {
+      document.body.removeChild(overlay);
+      challengeUser(u.id, gameId);
+    };
+    modal.appendChild(btn);
+  });
+
+  const cancel = document.createElement('button');
+  cancel.className = 'btn-primary'; cancel.style.backgroundColor = 'var(--danger-color)'; cancel.style.marginTop = '16px'; cancel.style.width = '100%';
+  cancel.textContent = 'Cancel';
+  cancel.onclick = () => document.body.removeChild(overlay);
+  
+  modal.appendChild(cancel);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+}
+
 function launchGame(game) {
   if (game.type === 'solo') {
     startCanvasGame(game.id, 'solo_local', true);
   } else {
-    // For now, just a dummy alert unless we have a specific target
-    const targetUserId = prompt("Enter User ID to challenge (or leave blank to play vs self locally):");
-    if (targetUserId) {
-      challengeUser(targetUserId, game.id);
-    } else {
-      startCanvasGame(game.id, 'local_test', true);
-    }
+    showChallengeSelectModal(game.id);
   }
 }
 
 function startCanvasGame(gameId, instanceId, isHost) {
-  // Placeholder for triggering gameLogic.js
-  console.log(`Starting ${gameId} in canvas. Instance: ${instanceId}. Host: ${isHost}`);
   const overlay = document.createElement('div');
-  overlay.style.position = 'fixed';
-  overlay.top = 0; overlay.left = 0; overlay.width = '100vw'; overlay.height = '100vh';
-  overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
-  overlay.style.zIndex = 2000;
-  overlay.style.display = 'flex';
-  overlay.style.flexDirection = 'column';
-  overlay.style.justifyContent = 'center';
-  overlay.style.alignItems = 'center';
+  overlay.style.position = 'fixed'; overlay.top = 0; overlay.left = 0; overlay.width = '100vw'; overlay.height = '100vh';
+  overlay.style.backgroundColor = 'rgba(0,0,0,0.9)'; overlay.style.zIndex = 2000;
+  overlay.style.display = 'flex'; overlay.style.flexDirection = 'column'; overlay.style.justifyContent = 'center'; overlay.style.alignItems = 'center';
 
   const canvas = document.createElement('canvas');
   canvas.width = window.innerWidth > 400 ? 400 : window.innerWidth - 40;
   canvas.height = window.innerHeight > 600 ? 500 : window.innerHeight - 100;
-  canvas.style.backgroundColor = '#1a1a1a';
+  canvas.style.backgroundColor = '#0a0a0a';
+  canvas.style.border = '1px solid var(--glass-border)';
   canvas.style.borderRadius = 'var(--radius-lg)';
+  canvas.style.boxShadow = 'var(--shadow-float)';
   
   const closeBtn = document.createElement('button');
   closeBtn.textContent = 'Quit Game';
   closeBtn.className = 'btn-primary';
   closeBtn.style.marginTop = '20px';
   closeBtn.style.backgroundColor = 'var(--danger-color)';
-  closeBtn.onclick = () => document.body.removeChild(overlay);
+  closeBtn.onclick = () => {
+    if (canvas.dataset.cleanup) canvas.dataset.cleanup();
+    document.body.removeChild(overlay);
+  };
 
   overlay.appendChild(canvas);
   overlay.appendChild(closeBtn);
   document.body.appendChild(overlay);
 
-  // Render dummy context to prove it runs
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#fff';
-  ctx.font = '24px Inter';
-  ctx.textAlign = 'center';
-  ctx.fillText(`${gameId.toUpperCase()} - Ready`, canvas.width/2, canvas.height/2);
+  // Invoke dedicated game logic logic engine!
+  launchGameInCanvas(gameId, instanceId, isHost, canvas, closeBtn.onclick);
+}/2, canvas.height/2);
 }
