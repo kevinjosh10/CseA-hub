@@ -55,8 +55,9 @@ export function initChat() {
           bubble.style.color = '#fff';
           bubble.style.borderBottomRightRadius = '4px';
         } else {
-          bubble.style.backgroundColor = '#ffffff';
-          bubble.style.color = 'var(--text-primary)';
+          bubble.className = 'glass-card';
+          bubble.style.backgroundColor = 'var(--bg-panel-hover)';
+          bubble.style.color = '#fff';
           bubble.style.borderBottomLeftRadius = '4px';
         }
 
