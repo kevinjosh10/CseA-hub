@@ -35,7 +35,7 @@ export const AppState = {
        username: data.username,
        displayName: data.displayName,
        avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${data.displayName}`,
-       role: data.username === 'GODKEVZ123' ? 'admin' : 'user',
+       role: data.username === 'godkevz123' ? 'admin' : 'user',
        xp: 0,
        streak: 0,
        createdAt: new Date().toISOString()
