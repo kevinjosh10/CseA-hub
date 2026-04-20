@@ -32,9 +32,9 @@
     <div id="main-layout" class="layout-wrapper">
       
       <!-- Left Column: Users / Groups -->
-      <aside class="column col-left">
+      <aside class="column col-left glass-panel">
         <div class="panel-header">
-          <h3 style="font-size: 16px; font-weight: 600;">Community</h3>
+          <h3 style="font-size: 16px; font-weight: 600; color: #fff;">Community</h3>
         </div>
         <div id="users-list" style="flex: 1; overflow-y: auto; padding: 12px;">
           <!-- Populated by JS -->
@@ -42,17 +42,17 @@
       </aside>
 
       <!-- Center Column: Chat -->
-      <main class="column col-main">
+      <main class="column col-main glass-panel">
         <div class="panel-header">
-          <h3 id="current-chat-title" style="font-size: 16px; font-weight: 600;">Global Chat</h3>
-          <button id="btn-debug" title="Debug / Admin" class="hidden" style="padding: 6px; border-radius: var(--radius-sm); border: 1px solid var(--bg-tertiary);">
+          <h3 id="current-chat-title" style="font-size: 16px; font-weight: 600; color: #fff;">Global Chat</h3>
+          <button id="btn-debug" title="Debug / Admin" class="hidden" style="padding: 6px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           </button>
         </div>
         <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
           <!-- Populated by JS -->
         </div>
-        <div style="padding: 16px; border-top: 1px solid var(--bg-tertiary); background-color: var(--bg-secondary);">
+        <div style="padding: 16px; border-top: 1px solid var(--glass-border); background-color: rgba(0,0,0,0.1);">
           <div style="display: flex; gap: 12px;">
             <input type="text" id="chat-input" placeholder="Message..." style="flex: 1; border-radius: var(--radius-full);">
             <button id="btn-send" style="background-color: var(--accent-color); width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
@@ -63,9 +63,9 @@
       </main>
 
       <!-- Right Column: Games / Leaderboard -->
-      <aside class="column col-right">
+      <aside class="column col-right glass-panel">
         <div class="panel-header">
-          <h3 style="font-size: 16px; font-weight: 600;">Play & Rank</h3>
+          <h3 style="font-size: 16px; font-weight: 600; color: #fff;">Play & Rank</h3>
         </div>
         <div style="flex: 1; overflow-y: auto; padding: 12px;">
            <!-- Game Launchers & Leaderboard -->

@@ -29,12 +29,10 @@ export async function initLeaderboard() {
     snapshot.forEach(doc => {
       const data = doc.data();
       const row = document.createElement('div');
+      row.className = 'glass-card';
       row.style.display = 'flex';
       row.style.alignItems = 'center';
       row.style.padding = '12px';
-      row.style.backgroundColor = '#fff';
-      row.style.borderRadius = 'var(--radius-md)';
-      row.style.boxShadow = 'var(--shadow-soft)';
       
       row.innerHTML = `
         <div style="font-weight: 700; color: var(--text-muted); width: 24px;">#${rank}</div>
